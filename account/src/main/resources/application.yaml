@@ -1,0 +1,59 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/postgres
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/bank_db
+      database: bank_db
+  cloud:
+    stream:
+      defaultBinder: kafka
+      bindings:
+        input:
+          destination: account-topic
+          group: account-group
+          binder: kafka
+        output:
+          destination: kafka-topic
+          binder: kafka
+          content-type: application/json
+      kafka:
+        binder:
+          brokers: localhost:9092
+      rabbit:
+        binder:
+          brokers: localhost
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    exchange: account-exchange
+    queue: account-queue
+    routingKey: account-routing-key
+  security:
+    oauth2:
+      client:
+        registration:
+          custom-oauth: vs
+          client-id: your-client-id
+          client-secret: your-client-secret
+          authorization-grant-type: client_credentials
+          provider: custom-oauth-provider
+        provider:
+          custom-oauth-provider:
+            token-uri: https://your-auth-server.com/oauth/token

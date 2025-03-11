@@ -1,0 +1,78 @@
+plugins {
+	id 'org.springframework.boot' version '3.3.2'
+	id 'java'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.openapi.generator' version '6.6.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'  // Adjust based on your JDK version
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation platform("org.springframework.cloud:spring-cloud-dependencies:2023.0.3")
+	// Spring Boot Web and JPA
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Database Driver
+	implementation 'org.postgresql:postgresql:42.5.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+	// Validation API (use Jakarta for Spring Boot 3)
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Lombok (Reduces boilerplate)
+	implementation 'org.projectlombok:lombok:1.18.30'
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+	// OpenAPI Generator dependencies
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+	// OpenFeign for declarative REST client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+	implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+
+	// RabbitMQ Messaging
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$rootDir/openapi.yaml"  // Your OpenAPI spec location
+	outputDir = "$buildDir/generated"  // Output folder for generated code
+	apiPackage = "com.thbs.consumer.accounts.api"
+	modelPackage = "com.thbs.consumer.accounts.model"
+	configOptions = [
+			"interfaceOnly": "true",  // Generate only interfaces (not implementation classes)
+			"dateLibrary": "java8",
+			"useJakartaEe": "true"
+	]
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs += ["$buildDir/generated/src/main/java"]
+		}
+	}
+}
+
+tasks.named('compileJava') {
+	dependsOn tasks.named('openApiGenerate')
+}
+
+test {
+	useJUnitPlatform()
+}
