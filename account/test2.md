@@ -110,7 +110,7 @@ This sequence diagram script can be rendered using PlantUML to visualize the des
 
 ## UML Sequence Diagram
 
-(diagram.jpg)
+![alt text](diagram.jpg)
 ## API Documentation
 
 Sure! Below is the structured API documentation for each endpoint based on the provided business logic.
